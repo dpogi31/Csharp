@@ -1,0 +1,59 @@
+﻿@model IEnumerable<Grocery.Models.Cart>
+
+@{
+    ViewData["Title"] = "Your Cart";
+}
+
+<h1>Your Cart</h1>
+
+@if (Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Total Price</th>
+                <th>Added On</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Product?.Description</td>
+                    <td>@item.Quantity</td>
+                    <td>@item.TotalPrice.ToString("C")</td>
+                    <td>@item.CreatedDate.ToString("g")</td>
+                    <td>
+                        
+                        <a asp-action="Delete" asp-route-id="@item.Id">Remove</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Your cart is empty.</p>
+}
+
+<form asp-action="Checkout" asp-controller="Orders" method="post">
+    @Html.AntiForgeryToken()
+    <div class="form-group">
+        <label>Payment Method</label>
+        <select name ="paymentMethod" class="form-control">
+            <option value="CreditCard">Credit Card</option>
+            <option value="Paypal">PayPal</option>
+            <option value="BankTransfer">Bank Transfer</option>
+            <option value="COD">Cash on Delivery</option>
+        </select>
+    </div>
+   
+    <button type="submit" class="btn btn-primary">Checkout</button>
+</form>
+<p>
+    <a asp-controller="Products" asp-action="Index">Continue Shopping</a>
+</p>
